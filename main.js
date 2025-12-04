@@ -223,6 +223,8 @@ let ORIGINAL_CABINET;
   addCabinet();
   addCabinet();
   addCabinet();
+  addCabinet();
+  addCabinet();
 
   setInterval(() => {
     addCabinet();
