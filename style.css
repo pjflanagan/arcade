@@ -1,4 +1,10 @@
 
+/* TODO: add an animation that goes from hidden, to first cabinet, to 2nd, 3rd, then hidden again */
+/* 
+then for the first visible ones, apply a negative value for the animation-delay
+By default, a CSS animation starts at the first keyframe (0%), but you can manipulate this start point using the animation-delay property. A positive value will delay the start of the animation, while a negative value will cause the animation to start partway through
+*/
+
 html, body {
   width: 100vw;
   height: 100vh;

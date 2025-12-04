@@ -72,6 +72,10 @@ const GIF_URL_LIBRARIES = {
     'https://media.giphy.com/media/Thp8bXXK2h3ANXAtOE/giphy.gif',
     'https://media.giphy.com/media/wTzYIM6Tjk0Ao/giphy.gif',
     'https://media.giphy.com/media/3o751WWy3RxPIkCcgw/giphy.gif',
+  ],
+  // Baldur's Gate
+  bg3: [
+    'https://media.giphy.com/media/1MHDdK3yzM05tUEOHH/giphy.gif?cid=ecf05e47np7eh84agqqynwthq88lvujln0gsg6yr23w5jqlb&ep=v1_gifs_related&rid=giphy.gif&ct=g',
   ]
   // GTAV
   // Super Smash Bros
@@ -95,6 +99,8 @@ class Cabinet {
     this.library = [...gifLibrary];
     this.pallet = pallet;
   }
+
+  // Lifecycle ----------------------------------------------------
 
   // renders the cabinet on an element
   // starts the gif timeout
@@ -121,17 +127,16 @@ class Cabinet {
     // TODO: generate random animation offsets and cabinet sizings
 
     this.screen = this.element.find('.screen');
-    this.setGifOnScreen(this.getRandomGifUrl());
+    this.currentGif = this.setGifOnScreen(this.getRandomGifUrl());
   }
   
   destroy() {
-    // clear the timeout
     clearTimeout(this.timeout);
-    // remove from the screen
+    this.library.push(this.currentGif);
     $(this.element).remove();
   }
   
-  // gif cycler
+  // Gif Library and Display --------------------------------------
 
   setGifOnScreen(gifUrl) {
     $(this.screen).css({
@@ -139,11 +144,11 @@ class Cabinet {
     });
     this.timeout = setTimeout(() => {
       const newGifUrl = this.exchangeForRandomGifUrl(gifUrl);
-      this.setGifOnScreen(newGifUrl);
+      this.currentGif = this.setGifOnScreen(newGifUrl);
     }, Math.random() * 3000 + 1800);
+    return gifUrl;
   }
 
-  // Gif Library helpers
   getRandomGifUrl() {
     const randomIndex = Math.floor(Math.random() * this.library.length);
     const randomGifUrl = this.library[randomIndex];
@@ -151,13 +156,9 @@ class Cabinet {
     return randomGifUrl;
   }
 
-  returnGifUrl(oldUrl) {
-    this.library.push(oldUrl);
-  }
-
   exchangeForRandomGifUrl(oldUrl) {
     const newUrl = this.getRandomGifUrl();
-    this.returnGifUrl(oldUrl);
+    this.library.push(oldUrl);
     return newUrl;
   }
 }
@@ -166,16 +167,9 @@ class Cabinet {
 //  Cabinets
 // ----------------------------------------------------------------
 
-const gifLibrary = new Cabinet('all', [
-  ...GIF_URL_LIBRARIES.celesteAndTowerfall,
-  ...GIF_URL_LIBRARIES.cyberpunk,
-  ...GIF_URL_LIBRARIES.donkeyKongCountry,
-  ...GIF_URL_LIBRARIES.horizon,
-  ...GIF_URL_LIBRARIES.skyrim,
-  ...GIF_URL_LIBRARIES.snesMario,
-  ...GIF_URL_LIBRARIES.spiderMan,
-  ...GIF_URL_LIBRARIES.stray,
-]);
+
+// pallet should be an object with: main, font, button1, button2, joystick, borders
+// the Cabinet class itself should take a cabinet object
 
 const CABINETS = [
   new Cabinet('Cyberpunk 2077', GIF_URL_LIBRARIES.cyberpunk, ['#f7ec13', '#56beca']),
