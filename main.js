@@ -106,7 +106,7 @@ class Cabinet {
   // starts the gif timeout
   render(element) {
     this.element = element;
-    
+
     this.element.find('.logo-holder').css({
       background: this.pallet[0]
     });
@@ -129,13 +129,16 @@ class Cabinet {
     this.screen = this.element.find('.screen');
     this.currentGif = this.setGifOnScreen(this.getRandomGifUrl());
   }
-  
+
   destroy() {
-    clearTimeout(this.timeout);
-    this.library.push(this.currentGif);
-    $(this.element).remove();
+    $(this.element).addClass('leaving');
+    setTimeout(() => {
+      clearTimeout(this.timeout);
+      this.library.push(this.currentGif);
+      $(this.element).remove();
+    }, 500);
   }
-  
+
   // Gif Library and Display --------------------------------------
 
   setGifOnScreen(gifUrl) {
@@ -174,29 +177,56 @@ class Cabinet {
 const CABINETS = [
   new Cabinet('Cyberpunk 2077', GIF_URL_LIBRARIES.cyberpunk, ['#f7ec13', '#56beca']),
   new Cabinet('Horizon', GIF_URL_LIBRARIES.horizon, ['#55aee4', '#7d1e13']),
-  new Cabinet('Spider-Man', GIF_URL_LIBRARIES.spiderMan, ['#ce1612', '#fff'])
+  new Cabinet('Spider-Man', GIF_URL_LIBRARIES.spiderMan, ['#ce1612', '#fff']),
+  new Cabinet('Stray', GIF_URL_LIBRARIES.stray, ['#ff6f61', '#333']),
+  new Cabinet('Skyrim', GIF_URL_LIBRARIES.skyrim, ['#8a8a8a', '#000']),
+  new Cabinet('DK Country', GIF_URL_LIBRARIES.donkeyKongCountry, ['#4caf50', '#ffeb3b']),
+  new Cabinet('Celeste & Towerfall', GIF_URL_LIBRARIES.celesteAndTowerfall, ['#ff66cc', '#6633ff']),
+  new Cabinet('SNES Mario', GIF_URL_LIBRARIES.snesMario, ['#ff0000', '#0000ff']),
+  new Cabinet("Baldur's Gate 3", GIF_URL_LIBRARIES.bg3, ['#222222', '#dddddd']),
 ];
+
+const DISPLAY_CABINETS = [];
+
+function addCabinet() {
+  const availableCabinets = CABINETS.filter(cabinet => !DISPLAY_CABINETS.includes(cabinet));
+  if (availableCabinets.length === 0) return;
+
+  const randomCabinet = availableCabinets[Math.floor(Math.random() * availableCabinets.length)];
+  DISPLAY_CABINETS.push(randomCabinet);
+
+  const cabinetElement = ORIGINAL_CABINET.clone();
+  randomCabinet.render(cabinetElement);
+  $('.cabinets').append(cabinetElement);
+}
+
+function removeLeftmostCabinet() {
+  const cabinetElement = $('.cabinet-holder').first();
+  const cabinetIndex = $('.cabinet-holder').index(cabinetElement);
+  const cabinet = DISPLAY_CABINETS[cabinetIndex];
+
+  cabinet.destroy();
+  DISPLAY_CABINETS.splice(cabinetIndex, 1);
+}
+
 
 // ----------------------------------------------------------------
 //  MAIN
 // ----------------------------------------------------------------
 
-(function() {
-  const originalCabinet = $('.cabinet-holder');
-  originalCabinet.remove();
+let ORIGINAL_CABINET;
 
-  const newCabinet = originalCabinet.clone();
-  CABINETS[0].render(newCabinet);
-  $('.cabinets').append(newCabinet);
+(function () {
+  ORIGINAL_CABINET = $('.cabinet-holder');
+  ORIGINAL_CABINET.remove();
 
-  // TODO: use this to add a new cabinet, at the start, add 7 cabinets that'll get scrolled
-  const newCabinet2 = originalCabinet.clone();
-  CABINETS[1].render(newCabinet2);
-  $('.cabinets').append(newCabinet2);
+  addCabinet();
+  addCabinet();
+  addCabinet();
 
-  const newCabinet3 = originalCabinet.clone();
-  CABINETS[2].render(newCabinet3);
-  $('.cabinets').append(newCabinet3);
-  // CABINETS[0].destroy();
+  setInterval(() => {
+    addCabinet();
+    removeLeftmostCabinet();
+  }, 2800);
 })();
 

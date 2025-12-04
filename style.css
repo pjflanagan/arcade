@@ -27,7 +27,7 @@ html, body {
   display: flex;
   height: 600px;
   width: 100vw;
-  justify-content: center;
+  justify-content: left;
   top: calc(100% - 660px);
   position: fixed;
 }
@@ -35,11 +35,19 @@ html, body {
 .cabinet-holder {
   margin: 0 14px;
   flex: none;
+  transition: margin-left 0.5s ease;
+}
+
+.cabinet-holder.leaving {
+  margin-left: -434px;
+  /* 420 (width) + 14 (margin) */
 }
 
 .cabinet {
   width: 420px;
+  transition: all 0.5s ease;
 }
+
 
 .logo-holder {
   width: 100%;
